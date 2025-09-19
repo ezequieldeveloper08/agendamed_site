@@ -2,13 +2,19 @@
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { FormProvider, useForm } from "react-hook-form"
 import { FormInput } from "../form-components/form-input"
 import Link from "next/link"
 import { useApi } from "@/hooks/use-api"
 import { toast } from "sonner"
+import { Building, Building2Icon, BuildingIcon, SquareMousePointer, StethoscopeIcon, UserIcon } from "lucide-react"
+import { UserTypeSelection } from "../steps/user-type-selection"
+import { useState } from "react"
+import { CreateAccountStep } from "../steps/create-account-step"
+import { EstablishmentStep } from "../steps/establishment-step"
+import { ProfessionalStep } from "../steps/professional-step"
 
 interface LoginDto {
   name: string;
@@ -22,6 +28,8 @@ export function CreateAccountForm({
 }: React.ComponentProps<"div">) {
   const router = useRouter();
   const form = useForm<LoginDto>();
+  const [step, setStep] = useState(1);
+  const [type, setType] = useState('Profissional');
   const { post, data, running, error } = useApi();
 
   const handleSubmit = async (form: LoginDto) => {
@@ -39,55 +47,60 @@ export function CreateAccountForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
-        <CardContent className="grid p-0 md:grid-cols-2">
+        <CardContent className="pb-6">
           <FormProvider {...form}>
-            <form className="p-6 md:p-8" onSubmit={form.handleSubmit(handleSubmit)}>
+            <form className="p-6" onSubmit={form.handleSubmit(handleSubmit)}>
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col items-center text-center">
-                  <h1 className="text-2xl font-bold">Bem-vindo de volta</h1>
+                  <h1 className="text-2xl font-bold">Comece sua jornada no AgendaMed</h1>
                   <p className="text-muted-foreground text-balance">
-                    Entre na sua conta AgendaMed.
+                    Crie sua conta gratuita e conecte-se a pacientes, profissionais e estabelecimentos de saúde de forma simples e rápida.
                   </p>
                 </div>
-                <FormInput
-                  control={form.control}
-                  label="Nome completo"
-                  placeholder="Ex.: João de Almeida"
-                  {...form.register('name', { required: 'Nome é obrigatório' })}
-                />
-                <FormInput
-                  control={form.control}
-                  label="Email"
-                  placeholder="m@example.com"
-                  type="email"
-                  {...form.register('email', { required: 'Email é obrigatório' })}
-                />
-                <FormInput
-                  control={form.control}
-                  label="Senha"
-                  placeholder="********"
-                  type="password"
-                  {...form.register('password', { required: 'Senha é obrigatória' })}
-                />
-                <Button type="submit" className="w-full" loading={running}>
-                  Entrar
-                </Button>
-                <div className="text-center text-sm">
-                  Já tem uma conta?{" "}
-                  <Link href="/entrar" className="underline underline-offset-4">
-                    Entrar
-                  </Link>
+                <div className="flex items-center w-full max-w-sm mx-auto">
+                  <div className="w-14 h-14 flex items-center justify-center border rounded-full bg-blue-50 border-blue-500 text-blue-500">
+                    <SquareMousePointer />
+                  </div>
+                  <div className={`flex-1 border-t ${step == 2 && 'border-blue-500'}`}></div>
+                  <div className={`w-14 h-14 flex items-center justify-center border rounded-full ${step > 1 && 'bg-blue-50 border-blue-500 text-blue-500'}`}>
+                    <UserIcon />
+                  </div>
+                  <div className={`flex-1 border-t ${step == 3 && 'border-blue-500'}`}></div>
+                  <div className={`w-14 h-14 flex items-center justify-center border rounded-full ${step > 2 && 'bg-blue-50 border-blue-500 text-blue-500'}`}>
+                    {type == 'Profissional' ? <StethoscopeIcon /> : <Building2Icon />}
+                  </div>
+                </div>
+                <div>
+                  {step == 1 && <UserTypeSelection onSelect={setType} type={type} />}
+                  {step == 2 && <CreateAccountStep onAccountCreated={() => { }} onBack={() => { }} userType="" />}
+                  {step == 3 && type == 'Profissional' && <ProfessionalStep onBack={() => { }} userData={{
+                    name: 'Ezequiel Pires',
+                    dateOfBirth: '2020-10-08',
+                    email: 'ezequiel.pires082000@gmail.com',
+                    gender: 'maale',
+                    password: '12345678',
+                    userType: 'establishment_owner',
+                    cellphone: '(64) 99626-8117',
+                    document: 'TESTE'
+                  }} />}
+                  {step == 3 && type != 'Profissional' && <EstablishmentStep onBack={() => { }} userData={{
+                    name: 'Ezequiel Pires',
+                    dateOfBirth: '2020-10-08',
+                    email: 'ezequiel.pires082000@gmail.com',
+                    gender: 'maale',
+                    password: '12345678',
+                    userType: 'establishment_owner',
+                    cellphone: '(64) 99626-8117',
+                    document: 'TESTE'
+                  }} />}
                 </div>
               </div>
             </form>
           </FormProvider>
-          <div className="bg-muted relative hidden md:block">
-            <img
-              src="/cadastrar-bg.jpg"
-              alt="Image"
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <CardFooter className="flex gap-2 justify-end">
+            <Button onClick={() => step == 1 ? router.back() : setStep(step - 1)} variant={"ghost"} size={"lg"}>Voltar</Button>
+            <Button onClick={() => step < 3 ? setStep(step + 1) : null} size={"lg"}>{step == 3 ? 'Finalizar' : 'Próximo'}</Button>
+          </CardFooter>
         </CardContent>
       </Card>
       <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
