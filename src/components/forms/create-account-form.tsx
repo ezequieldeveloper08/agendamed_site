@@ -46,8 +46,6 @@ export function CreateAccountForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden p-0">
-        <CardContent className="pb-6">
           <FormProvider {...form}>
             <form className="p-6" onSubmit={form.handleSubmit(handleSubmit)}>
               <div className="flex flex-col gap-6">
@@ -97,16 +95,10 @@ export function CreateAccountForm({
               </div>
             </form>
           </FormProvider>
-          <CardFooter className="flex gap-2 justify-end">
+          <div className="flex gap-2 justify-center">
             <Button onClick={() => step == 1 ? router.back() : setStep(step - 1)} variant={"ghost"} size={"lg"}>Voltar</Button>
             <Button onClick={() => step < 3 ? setStep(step + 1) : null} size={"lg"}>{step == 3 ? 'Finalizar' : 'Próximo'}</Button>
-          </CardFooter>
-        </CardContent>
-      </Card>
-      <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </div>
+          </div>
     </div>
   )
 }
