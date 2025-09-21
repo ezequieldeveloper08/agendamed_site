@@ -53,7 +53,7 @@ export function FormInput({
       rules={rules}
       disabled={disabled}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="flex flex-col gap-2">
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
             <div className="relative">

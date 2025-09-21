@@ -51,7 +51,7 @@ export function FormSelect({
       rules={rules}
       disabled={disabled}
       render={({ field }) => (
-        <FormItem className="w-full">
+        <FormItem className="w-full flex flex-col gap-2">
           {label && <FormLabel>{label}</FormLabel>}
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>

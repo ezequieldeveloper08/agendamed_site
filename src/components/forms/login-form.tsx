@@ -9,6 +9,7 @@ import { FormInput } from "../form-components/form-input"
 import Link from "next/link"
 import { useApi } from "@/hooks/use-api"
 import { toast } from "sonner"
+import { setCookies } from "@/app/actions"
 
 interface LoginDto {
   email: string;
@@ -25,7 +26,10 @@ export function LoginForm({
 
   const handleSubmit = async (form: LoginDto) => {
     try {
-      const res = await post("auth/login", form);
+      const {user, access_token} = await post("auth/login", form);
+
+      await setCookies('agendamed.user', JSON.stringify(user));
+      await setCookies('agendamed.access_token', JSON.stringify(access_token));
 
       toast.success("Login realizado com sucesso!");
       router.push("/dashboard");

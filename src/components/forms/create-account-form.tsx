@@ -2,39 +2,35 @@
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { FormProvider, useForm } from "react-hook-form"
-import { FormInput } from "../form-components/form-input"
-import Link from "next/link"
 import { useApi } from "@/hooks/use-api"
 import { toast } from "sonner"
-import { Building, Building2Icon, BuildingIcon, SquareMousePointer, StethoscopeIcon, UserIcon } from "lucide-react"
+import { Building2Icon, SquareMousePointer, StethoscopeIcon, UserIcon } from "lucide-react"
 import { UserTypeSelection } from "../steps/user-type-selection"
 import { useState } from "react"
 import { CreateAccountStep } from "../steps/create-account-step"
 import { EstablishmentStep } from "../steps/establishment-step"
 import { ProfessionalStep } from "../steps/professional-step"
-
-interface LoginDto {
-  name: string;
-  email: string;
-  password: string;
-}
+import { IUser } from "@/types/user"
 
 export function CreateAccountForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
-  const form = useForm<LoginDto>();
+  const form = useForm<IUser>();
+  const type = form.watch('type');
   const [step, setStep] = useState(1);
-  const [type, setType] = useState('Profissional');
   const { post, data, running, error } = useApi();
 
-  const handleSubmit = async (form: LoginDto) => {
+  const handleSubmit = async (form: IUser) => {
     try {
+      if(step < 3) {
+        return setStep(step + 1);
+      }
       const res = await post("users", form);
+      console.log(res)
 
       toast.success("Conta criada com sucesso! 🎉");
       router.push("/entrar");
@@ -69,35 +65,17 @@ export function CreateAccountForm({
                   </div>
                 </div>
                 <div>
-                  {step == 1 && <UserTypeSelection onSelect={setType} type={type} />}
+                  {step == 1 && <UserTypeSelection onSelect={(type) => form.setValue('type', type)} type={type} />}
                   {step == 2 && <CreateAccountStep onAccountCreated={() => { }} onBack={() => { }} userType="" />}
-                  {step == 3 && type == 'Profissional' && <ProfessionalStep onBack={() => { }} userData={{
-                    name: 'Ezequiel Pires',
-                    dateOfBirth: '2020-10-08',
-                    email: 'ezequiel.pires082000@gmail.com',
-                    gender: 'maale',
-                    password: '12345678',
-                    userType: 'establishment_owner',
-                    cellphone: '(64) 99626-8117',
-                    document: 'TESTE'
-                  }} />}
-                  {step == 3 && type != 'Profissional' && <EstablishmentStep onBack={() => { }} userData={{
-                    name: 'Ezequiel Pires',
-                    dateOfBirth: '2020-10-08',
-                    email: 'ezequiel.pires082000@gmail.com',
-                    gender: 'maale',
-                    password: '12345678',
-                    userType: 'establishment_owner',
-                    cellphone: '(64) 99626-8117',
-                    document: 'TESTE'
-                  }} />}
+                  {step == 3 && type == 'Profissional' && <ProfessionalStep />}
+                  {step == 3 && type != 'Profissional' && <EstablishmentStep />}
                 </div>
               </div>
             </form>
           </FormProvider>
           <div className="flex gap-2 justify-center">
             <Button onClick={() => step == 1 ? router.back() : setStep(step - 1)} variant={"ghost"} size={"lg"}>Voltar</Button>
-            <Button onClick={() => step < 3 ? setStep(step + 1) : null} size={"lg"}>{step == 3 ? 'Finalizar' : 'Próximo'}</Button>
+            <Button onClick={form.handleSubmit(handleSubmit, (e) => console.log(e))} size={"lg"} disabled={step == 1 && type == null || type == 'undefiend'}>{step == 3 ? 'Finalizar' : 'Próximo'}</Button>
           </div>
     </div>
   )

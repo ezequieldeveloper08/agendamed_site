@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { parseCookies } from "nookies";
 
 export function useApi() {
     const baseUrl = 'http://localhost:8080/';
@@ -12,9 +13,13 @@ export function useApi() {
             setError(null);
 
             try {
+                const { 'agendamed.access_token': token } = parseCookies();
                 const res = await fetch(`${baseUrl}${path}`, {
                     method,
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": token && `Bearer ${token}`
+                    },
                     body: body ? JSON.stringify(body) : undefined,
                 });
 

@@ -29,17 +29,16 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useLayout } from "@/providers/layout-provider"
+import { deleteCookies } from "@/app/actions"
+import { useRouter } from "next/navigation"
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) {
+export function NavUser() {
+  const {user} = useLayout()
   const { isMobile } = useSidebar()
+  const router = useRouter();
+
+  if(user == null) return null;
 
   return (
     <SidebarMenu>
@@ -52,7 +51,7 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">{user.name.split(' ').slice(0,2).map(item => item.substring(0,1)).join('')}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -102,7 +101,10 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={async () => {
+              await deleteCookies('agendamed.user')
+              router.refresh()
+            }}>
               <LogOut />
               Log out
             </DropdownMenuItem>

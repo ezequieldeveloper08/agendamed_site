@@ -11,7 +11,7 @@ export interface IUser {
     password: string;
     createdAt: string;
     updatedAt: string;
-    localManager: ILocation;
+    localManager: Array<ILocation>;
     professional: IProfessional;
 }
 
