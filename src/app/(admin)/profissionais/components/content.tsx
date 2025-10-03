@@ -13,22 +13,25 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Plus, Search, Star, Phone, Mail, MapPin, Clock } from "lucide-react"
 import { IProfessional } from "@/types/user"
+import Link from "next/link"
 
-export function MedicosContent({professionals}: {professionals: Array<IProfessional>}) {
-    return (
+export function MedicosContent({ professionals }: { professionals: Array<IProfessional> }) {
+  return (
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Médicos</h1>
+          <h1 className="text-2xl font-bold">Profissionais</h1>
           <p className="text-sm text-muted-foreground">
             Gerencie a equipe médica da clínica
           </p>
         </div>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Novo Médico
-        </Button>
+        <Link href={'/profissionais/novo'}>
+          <Button className="gap-2">
+            <Plus className="h-4 w-4" />
+            Novo Médico
+          </Button>
+        </Link>
       </div>
 
       {/* Buscar Médicos */}

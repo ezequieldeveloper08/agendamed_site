@@ -4,6 +4,7 @@ import * as React from "react"
 import {
   ActivityIcon,
   AudioWaveform,
+  Building2Icon,
   CalendarIcon,
   ClipboardIcon,
   Command,
@@ -64,8 +65,13 @@ const data = {
       icon: UsersIcon,
     },
     {
-      title: "Médicos",
-      url: "/medicos",
+      title: "Estabelecimentos",
+      url: "/estabelecimentos",
+      icon: Building2Icon,
+    },
+    {
+      title: "Profissionais",
+      url: "/profissionais",
       icon: StethoscopeIcon,
     },
     {
@@ -112,14 +118,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
