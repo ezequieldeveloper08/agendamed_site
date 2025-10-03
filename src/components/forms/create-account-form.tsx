@@ -30,7 +30,6 @@ export function CreateAccountForm({
         return setStep(step + 1);
       }
       const res = await post("users", form);
-      console.log(res)
 
       toast.success("Conta criada com sucesso! 🎉");
       router.push("/entrar");

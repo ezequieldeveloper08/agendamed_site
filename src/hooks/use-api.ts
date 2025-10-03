@@ -13,7 +13,8 @@ export function useApi() {
             setError(null);
 
             try {
-                const { 'agendamed.access_token': token } = parseCookies();
+                const { 'agendamed.access_token': rawToken } = parseCookies();
+                const token = rawToken?.replace(/^"|"$/g, "");
                 const res = await fetch(`${baseUrl}${path}`, {
                     method,
                     headers: {

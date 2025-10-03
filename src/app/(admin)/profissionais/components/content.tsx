@@ -9,13 +9,69 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Plus, Search, Star, Phone, Mail, MapPin, Clock } from "lucide-react"
+import { Plus, Search, Trash, Edit } from "lucide-react"
 import { IProfessional } from "@/types/user"
 import Link from "next/link"
+import { flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
+import { useRouter } from "next/navigation"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-export function MedicosContent({ professionals }: { professionals: Array<IProfessional> }) {
+export function MedicosContent({ professionals: data }: { professionals: Array<IProfessional> }) {
+  const router = useRouter()
+  const columns = []
+
+  const table = useReactTable({
+    data,
+    columns: [
+      {
+        accessorKey: "id",
+        header: "",
+        cell: ({ row }) => <div></div>
+      },
+      {
+        accessorKey: "name",
+        header: "Nome",
+      },
+      {
+        accessorKey: "type",
+        header: "Tipo",
+      },
+      {
+        accessorKey: "specialties",
+        header: "Especialidades",
+      },
+      {
+        accessorKey: "address.city",
+        header: "Cidade",
+      },
+      {
+        accessorKey: "address.uf",
+        header: "UF",
+      },
+      {
+        accessorKey: "cellphone",
+        header: "Contato",
+      },
+      {
+        id: "actions",
+        enableHiding: false,
+        size: 1,
+        header: () => <div className="max-w-20 whitespace-nowrap">Ações</div >,
+        cell: ({ row }) => {
+          const value = data[row.id];
+          return <div className="flex gap-2 max-w-20">
+            <Button size="icon" variant="outline" onClick={() => router.push(`/estabelecimentos/editar/${value.id}`)}><Edit /></Button>
+            <Button size="icon" variant="outline"><Trash /></Button>
+          </div>
+        },
+      },
+    ],
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+  })
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -44,74 +100,61 @@ export function MedicosContent({ professionals }: { professionals: Array<IProfes
         </CardHeader>
         <CardContent>
           <div className="relative">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-2 top-4 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Buscar por nome, especialidade ou CRM..." className="pl-8" />
           </div>
         </CardContent>
       </Card>
 
-      {/* Lista de Médicos */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {professionals?.map((m, i) => (
-          <Card key={i} className="p-4">
-            <div className="flex items-start justify-between">
-              {/* Avatar + Nome */}
-              <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10">
-                  <AvatarFallback>
-                    {m.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-semibold">{m.name}</p>
-                  <p className="text-sm text-muted-foreground">{m.specialties.join(", ")}</p>
-                  <p className="text-xs text-muted-foreground">{m.document}</p>
-                </div>
-              </div>
-              {/* Status */}
-              <Badge
-                variant={"default"}
-              >
-                Ativo
-              </Badge>
-            </div>
-
-            {/* Avaliação + Consultas */}
-            <div className="flex items-center justify-between mt-3">
-              <div className="flex items-center gap-1 text-sm">
-                <Star className="h-4 w-4 text-yellow-500" />
-                <span>4.8</span>
-              </div>
-              <span className="text-sm text-muted-foreground">4 consultas</span>
-            </div>
-
-            {/* Contatos */}
-            <CardContent className="mt-2 space-y-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4" />
-                {m.cellphone}
-              </div>
-              {/* <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4" />
-                {m.email}
-              </div> */}
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                {m.address?.name}
-              </div>
-              {/* <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                {m.horario}
-              </div> */}
-            </CardContent>
-
-            {/* Botões */}
-            <div className="flex gap-2 mt-4">
-              <Button variant="outline" className="flex-1">Perfil</Button>
-              <Button className="flex-1">Agenda</Button>
-            </div>
-          </Card>
-        ))}
+      <div className="overflow-hidden rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                    </TableHead>
+                  )
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   )

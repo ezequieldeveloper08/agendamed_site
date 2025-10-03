@@ -1,3 +1,5 @@
+import { cookies } from "next/headers"
+
 interface FetchOptions<TParams> {
   endpoint: string
   params?: TParams
@@ -11,6 +13,8 @@ export async function fetchGeneric<TResponse, TParams = unknown>({
   revalidate = 3600,
   tags = [],
 }: FetchOptions<TParams>): Promise<TResponse> {
+  const c = await cookies();
+  const token = c.get('agendamed.access_token')?.value;
   const url = new URL(endpoint, process.env.NEXT_PUBLIC_API_URL)
 
   if (params && typeof params === "object") {
@@ -29,6 +33,7 @@ export async function fetchGeneric<TResponse, TParams = unknown>({
     },
     headers: {
       "Content-Type": "application/json",
+      "Authorization": token && `Bearer ${token?.replace(/^"|"$/g, "")}`
     },
   })
 

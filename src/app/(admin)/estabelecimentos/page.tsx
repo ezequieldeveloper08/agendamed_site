@@ -3,8 +3,8 @@ import { EstabelecimentosContent } from "./components/content";
 import { ILocation } from "@/types/user";
 
 export default async function Page() {
-    const {data} = await fetchGeneric<{data: Array<ILocation>, page: number, total: number, success: boolean}>({endpoint: 'locations'});
-
+    const {data} = await fetchGeneric<{data: Array<ILocation>, page: number, total: number, success: boolean}>({endpoint: 'locations/my', revalidate: 0});
+    
     return (
         <EstabelecimentosContent data={data} />
     )

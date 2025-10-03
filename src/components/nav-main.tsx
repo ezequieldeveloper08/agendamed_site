@@ -72,7 +72,7 @@ export function NavMain({
             </Collapsible>
           ) : (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild tooltip={item.title} className={path == item.url ? "bg-blue-500 hover:bg-blue-500 text-white hover:text-white" : ""}>
+              <SidebarMenuButton asChild tooltip={item.title} className={path == item.url ? "bg-primary hover:bg-primary text-white hover:text-white" : ""}>
                 <Link href={item.url}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
