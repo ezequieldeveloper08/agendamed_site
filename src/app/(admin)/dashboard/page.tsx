@@ -23,6 +23,13 @@ import {
 export default function Page() {
   return (
      <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Confira seus resultados</p>
+        </div>
+        <Button>+ Solicitar Exame</Button>
+      </div>
       {/* Métricas */}
       <div className="grid gap-4 md:grid-cols-4">
         <Card>

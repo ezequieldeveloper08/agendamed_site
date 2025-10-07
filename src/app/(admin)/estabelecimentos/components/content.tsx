@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Plus, Search, Trash } from "lucide-react";
@@ -15,6 +15,7 @@ import {
     useReactTable,
 } from "@tanstack/react-table"
 import { useRouter } from "next/navigation";
+import { CustomPagination } from "@/components/custom-pagination";
 
 export function EstabelecimentosContent({ data }) {
     const router = useRouter()
@@ -23,11 +24,6 @@ export function EstabelecimentosContent({ data }) {
     const table = useReactTable({
         data,
         columns: [
-            {
-                accessorKey: "id",
-                header: "",
-                cell: ({row}) => <div></div>
-            },
             {
                 accessorKey: "name",
                 header: "Nome",
@@ -52,7 +48,7 @@ export function EstabelecimentosContent({ data }) {
                 id: "actions",
                 enableHiding: false,
                 size: 1,
-                header: () => <div  className="max-w-20 whitespace-nowrap">Ações</div >,
+                header: () => <div className="max-w-20 whitespace-nowrap">Ações</div >,
                 cell: ({ row }) => {
                     const value = data[row.id];
                     return <div className="flex gap-2 max-w-20">
@@ -101,56 +97,69 @@ export function EstabelecimentosContent({ data }) {
                     </div>
                 </CardContent>
             </Card>
-            <div className="overflow-hidden rounded-md border">
-                <Table>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                        </TableHead>
-                                    )
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </TableCell>
-                                    ))}
+            <Card>
+                <CardHeader>
+                    <CardTitle>Lista de Estabelecimentos</CardTitle>
+                    <CardDescription>
+                        {data.length} estabelecimentos encontrados
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => {
+                                        return (
+                                            <TableHead key={header.id}>
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                        header.column.columnDef.header,
+                                                        header.getContext()
+                                                    )}
+                                            </TableHead>
+                                        )
+                                    })}
                                 </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 text-center"
-                                >
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
+                            ))}
+                        </TableHeader>
+                        <TableBody>
+                            {table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map((row) => (
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() && "selected"}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext()
+                                                )}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={columns.length}
+                                        className="h-24 text-center"
+                                    >
+                                        No results.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+                <CardFooter>
+                    <div className="w-full flex justify-end">
+                        <CustomPagination totalPages={12} maxVisible={3} />
+                    </div>
+                </CardFooter>
+            </Card>
         </div>
     )
 }

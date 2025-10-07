@@ -3,13 +3,14 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { FormProvider, useForm } from "react-hook-form"
 import { FormInput } from "../form-components/form-input"
 import Link from "next/link"
 import { useApi } from "@/hooks/use-api"
 import { toast } from "sonner"
 import { setCookies } from "@/app/actions"
+import Image from "next/image"
 
 interface LoginDto {
   email: string;
@@ -20,19 +21,20 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const query = useSearchParams();
   const router = useRouter();
   const form = useForm<LoginDto>();
-  const {post, data, running, error} = useApi();
+  const { post, data, running, error } = useApi();
 
   const handleSubmit = async (form: LoginDto) => {
     try {
-      const {user, access_token} = await post("auth/login", form);
+      const { user, access_token } = await post("auth/login", form);
 
       await setCookies('agendamed.user', JSON.stringify(user));
       await setCookies('agendamed.access_token', JSON.stringify(access_token));
-
+      const redirect = query.get('redirect');
       toast.success("Login realizado com sucesso!");
-      router.push("/dashboard");
+      router.push(redirect ?? "/dashboard");
     } catch (e: any) {
       toast.error(error ?? "Email e/ou senha incorreta(s)");
     }
@@ -46,9 +48,12 @@ export function LoginForm({
             <form className="p-6 md:p-8" onSubmit={form.handleSubmit(handleSubmit)}>
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col items-center text-center">
-                  <h1 className="text-2xl font-bold">Bem-vindo de volta</h1>
+                  <Link href={'/'}>
+                    <Image src={'/logo.png'} alt="agenda.max" width={200} height={40} />
+                  </Link>
+                  <h1 className="text-2xl font-bold mt-4">Bem-vindo de volta</h1>
                   <p className="text-muted-foreground text-balance">
-                    Entre na sua conta AgendaMed.
+                    Entre na sua conta AgendaMax.
                   </p>
                 </div>
                 <FormInput

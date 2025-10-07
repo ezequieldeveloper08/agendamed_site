@@ -8,6 +8,7 @@ import {
   CalendarIcon,
   ClipboardIcon,
   Command,
+  Compass,
   Frame,
   GalleryVerticalEnd,
   HomeIcon,
@@ -27,7 +28,9 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar"
+import Image from "next/image"
 
 const data = {
   user: {
@@ -117,8 +120,12 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <TeamSwitcher />
+      <SidebarHeader className="flex flex-row items-center overflow-hidden">
+        <div className="text-sidebar-primary-foreground flex aspect-square size-8 rounded-lg">
+          <img src={'/icon.png'} alt="agenda.max" className="object-contain w-full" />
+        </div>
+
+        <Image src={'/logo-text.png'} alt="agenda.max" width={120} height={32} className="mt-1"/>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

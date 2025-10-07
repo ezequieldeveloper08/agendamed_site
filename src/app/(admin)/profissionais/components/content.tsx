@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardFooter,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,6 +16,7 @@ import Link from "next/link"
 import { flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
 import { useRouter } from "next/navigation"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { CustomPagination } from "@/components/custom-pagination"
 
 export function MedicosContent({ professionals: data }: { professionals: Array<IProfessional> }) {
   const router = useRouter()
@@ -23,11 +25,6 @@ export function MedicosContent({ professionals: data }: { professionals: Array<I
   const table = useReactTable({
     data,
     columns: [
-      {
-        accessorKey: "id",
-        header: "",
-        cell: ({ row }) => <div></div>
-      },
       {
         accessorKey: "name",
         header: "Nome",
@@ -55,11 +52,12 @@ export function MedicosContent({ professionals: data }: { professionals: Array<I
       {
         id: "actions",
         enableHiding: false,
-        size: 1,
-        header: () => <div className="max-w-20 whitespace-nowrap">Ações</div >,
+        size: 80,
+        maxSize: 80,
+        header: () => <div className="w-20 whitespace-nowrap">Ações</div >,
         cell: ({ row }) => {
           const value = data[row.id];
-          return <div className="flex gap-2 max-w-20">
+          return <div className="flex gap-2 w-20">
             <Button size="icon" variant="outline" onClick={() => router.push(`/estabelecimentos/editar/${value.id}`)}><Edit /></Button>
             <Button size="icon" variant="outline"><Trash /></Button>
           </div>
@@ -106,56 +104,69 @@ export function MedicosContent({ professionals: data }: { professionals: Array<I
         </CardContent>
       </Card>
 
-      <div className="overflow-hidden rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+      <Card>
+        <CardHeader>
+          <CardTitle>Lista de Profissionais</CardTitle>
+          <CardDescription>
+            {data.length} profissionais encontrados
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                      </TableHead>
+                    )
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+        <CardFooter>
+          <div className="w-full flex justify-end">
+            <CustomPagination totalPages={12} maxVisible={3} />
+          </div>
+        </CardFooter>
+      </Card>
     </div>
   )
 }
