@@ -34,7 +34,7 @@ export function LoginForm({
       await setCookies('agendamed.access_token', JSON.stringify(access_token));
       const redirect = query.get('redirect');
       toast.success("Login realizado com sucesso!");
-      router.push(redirect ?? "/dashboard");
+      router.push(redirect ? redirect : user.type == 'Profissional' ? '/area-profissional' : "/dashboard");
     } catch (e: any) {
       toast.error(error ?? "Email e/ou senha incorreta(s)");
     }

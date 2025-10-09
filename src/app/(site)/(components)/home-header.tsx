@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useLayout } from "@/providers/layout-provider";
-import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Search, Sparkles, User } from "lucide-react";
+import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Search, Sparkles, Stethoscope, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -66,10 +66,12 @@ export function HomeHeader() {
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuGroup>
-                                        <DropdownMenuItem>
-                                            <Sparkles />
-                                            Upgrade to Pro
-                                        </DropdownMenuItem>
+                                        <Link href={'/area-profissional'}>
+                                            <DropdownMenuItem>
+                                                <Stethoscope />
+                                                Area do Profissional
+                                            </DropdownMenuItem>
+                                        </Link>
                                     </DropdownMenuGroup>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuGroup>
