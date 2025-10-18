@@ -77,15 +77,15 @@ export function HomeHeader() {
                                     <DropdownMenuGroup>
                                         <DropdownMenuItem>
                                             <BadgeCheck />
-                                            Account
+                                            Minha conta
                                         </DropdownMenuItem>
                                         <DropdownMenuItem>
                                             <CreditCard />
-                                            Billing
+                                            Pagamentos
                                         </DropdownMenuItem>
                                         <DropdownMenuItem>
                                             <Bell />
-                                            Notifications
+                                            Notificações
                                         </DropdownMenuItem>
                                     </DropdownMenuGroup>
                                     <DropdownMenuSeparator />
@@ -94,7 +94,7 @@ export function HomeHeader() {
                                         router.refresh()
                                     }}>
                                         <LogOut />
-                                        Log out
+                                        Sair
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>

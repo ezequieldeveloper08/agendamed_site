@@ -102,15 +102,15 @@ export function ProfessionalHeader() {
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem>
                                         <BadgeCheck />
-                                        Account
+                                        Minha conta
                                     </DropdownMenuItem>
                                     <DropdownMenuItem>
                                         <CreditCard />
-                                        Billing
+                                        Pagamentos
                                     </DropdownMenuItem>
                                     <DropdownMenuItem>
                                         <Bell />
-                                        Notifications
+                                        Notificações
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
@@ -119,7 +119,7 @@ export function ProfessionalHeader() {
                                     router.refresh()
                                 }}>
                                     <LogOut />
-                                    Log out
+                                    Sair
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
